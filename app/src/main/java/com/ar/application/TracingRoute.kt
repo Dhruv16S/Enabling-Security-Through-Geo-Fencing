@@ -27,14 +27,14 @@ class TracingRoute : AppCompatActivity(), OnMapReadyCallback {
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
-        Toast.makeText(this, "You are in Geofencing, Abhiram edit here", Toast.LENGTH_LONG).show()
+
         TODO(
             "This page may or may not run correctly. You will need to use an API key as described in the video," +
                     "If it doesn't run on the emulator check your Google Play Services OR Run the App on your device" +
                     "If you're running it on your device, enable developer options" +
                     "Delete this and Toast when understood"
         )
-
+        Toast.makeText(this, "You are in Geofencing, Abhiram edit here", Toast.LENGTH_LONG).show()
     }
 
     /**

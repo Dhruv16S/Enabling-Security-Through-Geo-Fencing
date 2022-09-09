@@ -5,5 +5,4 @@
     <string name="button_in_app">Go to In App Messaging</string>
     <string name="button_trace_route">Go to Trace Route Page</string>
     <string name="button_geofence">Go to Geo-fencing</string>
-    <string name="button_sos">Send SOS</string>
 </resources>
