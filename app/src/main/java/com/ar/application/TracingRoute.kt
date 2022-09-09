@@ -10,17 +10,17 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.ar.application.databinding.ActivityGeofencingBinding
+import com.ar.application.databinding.ActivityTracingRouteBinding
 
-class Geofencing : AppCompatActivity(), OnMapReadyCallback {
+class TracingRoute : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
-    private lateinit var binding: ActivityGeofencingBinding
+    private lateinit var binding: ActivityTracingRouteBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityGeofencingBinding.inflate(layoutInflater)
+        binding = ActivityTracingRouteBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -34,7 +34,7 @@ class Geofencing : AppCompatActivity(), OnMapReadyCallback {
                     "If you're running it on your device, enable developer options" +
                     "Delete this and Toast when understood"
         )
-        Toast.makeText(this, "You are in Geofencing, Gopal edit here", Toast.LENGTH_LONG).show()
+        Toast.makeText(this, "You are in Geofencing, Abhiram edit here", Toast.LENGTH_LONG).show()
     }
 
     /**
