@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Application</string>
+    <string name="app_name">GeoTrace</string>
     <string name="title_activity_geofencing">Geofencing</string>
     <string name="title_activity_tracing_route">TracingRoute</string>
     <string name="button_in_app">Go to In App Messaging</string>
