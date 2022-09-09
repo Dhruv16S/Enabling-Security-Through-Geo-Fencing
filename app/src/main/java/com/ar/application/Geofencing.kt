@@ -25,16 +25,10 @@ class Geofencing : AppCompatActivity(), OnMapReadyCallback {
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
-            .findFragmentById(R.id.map) as SupportMapFragment
+            .findFragmentById(R.id.mapGeofence) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-        TODO(
-            "This page may or may not run correctly. You will need to use an API key as described in the video," +
-                    "If it doesn't run on the emulator check your Google Play Services OR Run the App on your device" +
-                    "If you're running it on your device, enable developer options" +
-                    "Delete this and Toast when understood"
-        )
-        Toast.makeText(this, "You are in Geofencing, Gopal edit here", Toast.LENGTH_LONG).show()
+
     }
 
     /**
