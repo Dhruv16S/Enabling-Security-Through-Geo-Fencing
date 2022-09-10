@@ -31,7 +31,7 @@ class InAppMessaging : AppCompatActivity() {
             try {
                 val msgObj = SmsManager.getDefault()
                 // Fetch this number form the database, put your number while testing
-                msgObj.sendTextMessage("8978383634", null, "Sent Via Android Studio", null, null)
+                msgObj.sendTextMessage("9491395487", null, "Sent Via Android Studio", null, null)
             }catch(e : Exception){
                 Log.d("Error is : ", e.message.toString())
                 Toast.makeText(this, "Doesn't work ${e.message.toString()}", Toast.LENGTH_SHORT).show()
