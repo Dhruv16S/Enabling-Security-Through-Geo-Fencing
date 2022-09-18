@@ -1,18 +1,14 @@
 [
     {
-        "merged": "com.ar.application.app-mergeDebugResources-34:/layout/activity_tracing_route.xml",
-        "source": "com.ar.application.app-main-37:/layout/activity_tracing_route.xml"
+        "merged": "C:\\Users\\abbua\\Desktop\\study\\Enabling-Security-Through-Geo-Fencing\\app\\build\\intermediates\\incremental\\mergeDebugResources\\stripped.dir\\layout\\activity_show_saved_location_list.xml",
+        "source": "C:\\Users\\abbua\\Desktop\\study\\Enabling-Security-Through-Geo-Fencing\\app\\src\\main\\res\\layout\\activity_show_saved_location_list.xml"
     },
     {
-        "merged": "com.ar.application.app-mergeDebugResources-34:/layout/activity_in_app_messaging.xml",
-        "source": "com.ar.application.app-main-37:/layout/activity_in_app_messaging.xml"
+        "merged": "C:\\Users\\abbua\\Desktop\\study\\Enabling-Security-Through-Geo-Fencing\\app\\build\\intermediates\\incremental\\mergeDebugResources\\stripped.dir\\layout\\activity_maps.xml",
+        "source": "C:\\Users\\abbua\\Desktop\\study\\Enabling-Security-Through-Geo-Fencing\\app\\src\\main\\res\\layout\\activity_maps.xml"
     },
     {
-        "merged": "com.ar.application.app-mergeDebugResources-34:/layout/activity_main.xml",
-        "source": "com.ar.application.app-main-37:/layout/activity_main.xml"
-    },
-    {
-        "merged": "com.ar.application.app-mergeDebugResources-34:/layout/activity_geofencing.xml",
-        "source": "com.ar.application.app-main-37:/layout/activity_geofencing.xml"
+        "merged": "C:\\Users\\abbua\\Desktop\\study\\Enabling-Security-Through-Geo-Fencing\\app\\build\\intermediates\\incremental\\mergeDebugResources\\stripped.dir\\layout\\activity_main.xml",
+        "source": "C:\\Users\\abbua\\Desktop\\study\\Enabling-Security-Through-Geo-Fencing\\app\\src\\main\\res\\layout\\activity_main.xml"
     }
 ]

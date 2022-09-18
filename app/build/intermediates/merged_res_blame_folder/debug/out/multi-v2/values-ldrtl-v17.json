@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.ar.application.app-mergeDebugResources-33:/values-ldrtl-v17/values-ldrtl-v17.xml",
+            "outputFile": "C:\\Users\\abbua\\Desktop\\study\\Enabling-Security-Through-Geo-Fencing\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-ldrtl-v17\\values-ldrtl-v17.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\abbua\\.gradle\\caches\\transforms-3\\90da5318d8e4b33f8ae551a7a83ffdbc\\transformed\\material-1.6.1\\res\\values-ldrtl-v17\\values-ldrtl-v17.xml",
+                    "source": "C:\\Users\\abbua\\.gradle\\caches\\transforms-2\\files-2.1\\c78e2c0af5afa33232d9367e0579742a\\material-1.4.0\\res\\values-ldrtl-v17\\values-ldrtl-v17.xml",
                     "from": {
                         "startLines": "2,3",
                         "startColumns": "4,4",

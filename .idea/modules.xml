@@ -2,11 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Application.iml" filepath="$PROJECT_DIR$/.idea/modules/Application.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Application.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Application.app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Application.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Application.app.androidTest.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Application.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Application.app.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Application.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Application.app.unitTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/GpsTrackerApp.iml" filepath="$PROJECT_DIR$/.idea/modules/GpsTrackerApp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/GpsTrackerApp.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/GpsTrackerApp.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/GpsTrackerApp.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/GpsTrackerApp.app.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/GpsTrackerApp.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/GpsTrackerApp.app.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/GpsTrackerApp.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/GpsTrackerApp.app.unitTest.iml" />
     </modules>
   </component>
 </project>
