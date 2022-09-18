@@ -1,7 +1,9 @@
 package com.ar.application
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -28,8 +30,11 @@ class Login : AppCompatActivity() {
     lateinit var login : Button
     lateinit var create_account : TextView
     private lateinit var auth: FirebaseAuth
+    lateinit var sharedPreferences: SharedPreferences
+    var remember : Boolean = false
     val db = Firebase.firestore
 
+    @SuppressLint("CommitPrefEdits")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -43,9 +48,17 @@ class Login : AppCompatActivity() {
         login = findViewById(R.id.login_button)
         auth = Firebase.auth
 
+        sharedPreferences = getSharedPreferences("SHARED_PREF", Context.MODE_PRIVATE)
+        remember = sharedPreferences.getBoolean("CHECKBOX", false)
+
+        if(remember){
+            GoToHomePage()
+        }
+
         create_account.setOnClickListener {
             var goToSignUp = Intent(this@Login, SignUp::class.java)
             startActivity(goToSignUp)
+            finish()
         }
 
 
@@ -61,8 +74,11 @@ class Login : AppCompatActivity() {
                     .addOnCompleteListener(this){task->
                         if(task.isSuccessful){
                             val userUID = auth.currentUser?.uid
-                            val login_Home = Intent(this, MainActivity::class.java)
-                            startActivity(login_Home)
+                            val editor : SharedPreferences.Editor = sharedPreferences.edit()
+                            editor.putString("User UID", userUID)
+                            editor.putBoolean("CHECKBOX", true)
+                            editor.commit()
+                            GoToHomePage()
                         }
                         else
                             Toast.makeText(this, task.exception!!.message, Toast.LENGTH_SHORT).show()
@@ -86,5 +102,11 @@ class Login : AppCompatActivity() {
         }
 
         return true
+    }
+
+    private fun GoToHomePage() : Unit{
+        val login_Home = Intent(this, MainActivity::class.java)
+        startActivity(login_Home)
+        finish()
     }
 }

@@ -2,7 +2,7 @@ package com.ar.application
 
 import android.content.Context
 import android.content.Intent
-import android.content.res.ColorStateList
+import android.content.SharedPreferences
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -36,7 +36,8 @@ class SignUp : AppCompatActivity() {
     lateinit var contactField : TextInputLayout
     lateinit var pwdField : TextInputLayout
     lateinit var cpwdField : TextInputLayout
-
+    lateinit var sharedPreferences : SharedPreferences
+    var remember : Boolean = false
     lateinit var login_acc : TextView
 
     private lateinit var auth: FirebaseAuth
@@ -64,9 +65,17 @@ class SignUp : AppCompatActivity() {
 
         auth = Firebase.auth
 
+        sharedPreferences = getSharedPreferences("SHARED_PREF", Context.MODE_PRIVATE)
+        remember = sharedPreferences.getBoolean("CHECKBOX", false)
+
+        if(remember){
+            GoToHomePage()
+        }
+
         login_acc.setOnClickListener {
             val goToLogin = Intent(this, Login::class.java)
             startActivity(goToLogin)
+            finish()
         }
 
         signUp.setOnClickListener { v->
@@ -102,8 +111,11 @@ class SignUp : AppCompatActivity() {
                             }
 
                         Toast.makeText(baseContext, "Authentication Successful.", Toast.LENGTH_SHORT).show()
-                        val signup_Home = Intent(this, MainActivity::class.java)
-                        startActivity(signup_Home)
+                        val editor : SharedPreferences.Editor = sharedPreferences.edit()
+                        editor.putString("User UID", userUID)
+                        editor.putBoolean("CHECKBOX", true)
+                        editor.commit()
+                        GoToHomePage()
                     }
                     else {
                         try {
@@ -155,5 +167,11 @@ class SignUp : AppCompatActivity() {
             return false
         }
         return true
+    }
+
+    private fun GoToHomePage() : Unit{
+        val signup_Home = Intent(this, MainActivity::class.java)
+        startActivity(signup_Home)
+        finish()
     }
 }
