@@ -6,4 +6,5 @@
     <string name="button_trace_route">Go to Trace Route Page</string>
     <string name="button_geofence">Go to Geo-fencing</string>
     <string name="sos_button">SOS</string>
+    <string name="title_activity_maps">MapsActivity</string>
 </resources>
