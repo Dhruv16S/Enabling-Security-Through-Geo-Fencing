@@ -6,4 +6,15 @@
     <string name="button_trace_route">Go to Trace Route Page</string>
     <string name="button_geofence">Go to Geo-fencing</string>
     <string name="sos_button">SOS</string>
+    <string name="username">Username</string>
+    <string name="email">Email ID</string>
+    <string name="phone">Contact Number</string>
+    <string name="password">Password</string>
+    <string name="conf_password">Confirm Password</string>
+    <string name="signup_button">Signup</string>
+    <string name="login_button">Login</string>
+    <string name="no_account">New User ?</string>
+    <string name="create_acc">Create An Account</string>
+    <string name="have_acc">Existing User ?</string>
+    <string name='login_acc'>Login Here</string>
 </resources>
