@@ -17,4 +17,8 @@
     <string name="create_acc">Create An Account</string>
     <string name="have_acc">Existing User ?</string>
     <string name='login_acc'>Login Here</string>
+    <string name="home_name">Username</string>
+    <string name="home_hashName">Unique ID</string>
+    <string name="home_email">Email ID</string>
+    <string name="home_contact">Contact</string>
 </resources>
