@@ -61,6 +61,7 @@ class Geofencing : AppCompatActivity(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        geofencingClient = LocationServices.getGeofencingClient(this)
     }
 
     /**
@@ -120,11 +121,11 @@ class Geofencing : AppCompatActivity(), OnMapReadyCallback {
 
     private fun areLocationPermsGranted(): Boolean { // checks if location permissions have been granted
         return ContextCompat.checkSelfPermission(
-            applicationContext,
+            this,
             Manifest.permission.ACCESS_FINE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED ||
                 ContextCompat.checkSelfPermission(
-                    applicationContext,
+                    this,
                     Manifest.permission.ACCESS_COARSE_LOCATION
                 ) == PackageManager.PERMISSION_GRANTED
     }
@@ -132,7 +133,7 @@ class Geofencing : AppCompatActivity(), OnMapReadyCallback {
     private fun askForLocationPerms() { // requests for location permissions
         val permissions = mutableListOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
         )
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             permissions.add(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
@@ -141,7 +142,7 @@ class Geofencing : AppCompatActivity(), OnMapReadyCallback {
         ActivityCompat.requestPermissions(
             this,
             permissions.toTypedArray(),
-            LOCATION_REQUEST_CODE,
+            LOCATION_REQUEST_CODE
         )
     }
 
