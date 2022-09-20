@@ -12,6 +12,7 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.annotation.RequiresPermission
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
@@ -40,8 +41,6 @@ const val GEOFENCE_RADIUS = 500 // change later
 const val GEOFENCE_ID = "REMINDER_GEOFENCE_ID"
 const val GEOFENCE_EXPIRATION = 10 * 24 * 60 * 60 * 1000 // 10 days, change later
 const val GEOFENCE_DWELL_DELAY = 10 * 1000 // 10 secs, change later
-
-private val TAG = Geofencing::class.java.simpleName
 
 class Geofencing : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var map: GoogleMap
@@ -73,6 +72,7 @@ class Geofencing : AppCompatActivity(), OnMapReadyCallback {
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
      */
+    @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
         map.uiSettings.isZoomControlsEnabled = true
@@ -156,6 +156,7 @@ class Geofencing : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
     private fun createFence(map: GoogleMap) { // creates the physical, viewable fence; not the actual geofence
         map.setOnMapLongClickListener {
             map.addMarker(
@@ -188,6 +189,7 @@ class Geofencing : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
     private fun createGeofence(location: LatLng, key: String, geofencingClient: GeofencingClient) {
         val geofence = Geofence.Builder()
             .setRequestId(GEOFENCE_ID)
@@ -215,7 +217,7 @@ class Geofencing : AppCompatActivity(), OnMapReadyCallback {
             applicationContext,
             0,
             intent,
-            PendingIntent.FLAG_UPDATE_CURRENT
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -234,6 +236,7 @@ class Geofencing : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -245,7 +248,7 @@ class Geofencing : AppCompatActivity(), OnMapReadyCallback {
                 Toast.makeText(
                     this,
                     "Please grant background location permission!",
-                    Toast.LENGTH_LONG
+                    Toast.LENGTH_SHORT
                 )
                     .show()
                 askForBackgroundLocationPerm()
@@ -272,7 +275,7 @@ class Geofencing : AppCompatActivity(), OnMapReadyCallback {
                 Toast.makeText(
                     this,
                     "Please grant location permissions!",
-                    Toast.LENGTH_LONG
+                    Toast.LENGTH_SHORT
                 )
                     .show()
                 askForLocationPerms()
