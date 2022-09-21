@@ -13,6 +13,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatDelegate
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
@@ -34,8 +35,8 @@ class Login : AppCompatActivity() {
     var remember : Boolean = false
     val db = Firebase.firestore
 
-    @SuppressLint("CommitPrefEdits")
     override fun onCreate(savedInstanceState: Bundle?) {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
@@ -73,6 +74,7 @@ class Login : AppCompatActivity() {
                 auth.signInWithEmailAndPassword(log_userName.text.toString(), log_pwd.text.toString())
                     .addOnCompleteListener(this){task->
                         if(task.isSuccessful){
+                            Toast.makeText(this, "Logged In Successfully", Toast.LENGTH_SHORT).show()
                             val userUID = auth.currentUser?.uid
                             val editor : SharedPreferences.Editor = sharedPreferences.edit()
                             editor.putString("User UID", userUID)
