@@ -38,7 +38,7 @@ class Geofencing : AppCompatActivity(), OnMapReadyCallback {
 
     private val LOCATION_REQUEST_CODE = 123
     private val GEOFENCE_REQUEST_CODE = 456 // only for android version >= 10
-    private val CAMERA_ZOOM_LEVEL = 12f
+    private val CAMERA_ZOOM_LEVEL = 18f
     private val GEOFENCE_RADIUS = 500 // change later
     private val GEOFENCE_ID = "REMINDER_GEOFENCE_ID"
     private val GEOFENCE_EXPIRATION = 10 * 24 * 60 * 60 * 1000 // 10 days, change later
@@ -173,7 +173,6 @@ class Geofencing : AppCompatActivity(), OnMapReadyCallback {
 
     private fun setLongClick(map: GoogleMap) {
         map.setOnMapLongClickListener { latlng ->
-
             map.addMarker(
                 MarkerOptions().position(latlng)
                     .title("Current location")
@@ -188,7 +187,7 @@ class Geofencing : AppCompatActivity(), OnMapReadyCallback {
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, CAMERA_ZOOM_LEVEL))
 
             val database = Firebase.database
-            val reference = database.getReference("reminders")
+            val reference = database.getReference("fences")
             val key = reference.push().key
             if (key != null) {
                 val reminder = Fence(key, latlng.latitude, latlng.longitude)
