@@ -34,15 +34,17 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import kotlin.random.Random
 
-const val LOCATION_REQUEST_CODE = 123
-const val GEOFENCE_REQUEST_CODE = 456 // only for android version >= 10
-const val CAMERA_ZOOM_LEVEL = 12f
-const val GEOFENCE_RADIUS = 500 // change later
-const val GEOFENCE_ID = "REMINDER_GEOFENCE_ID"
-const val GEOFENCE_EXPIRATION = 10 * 24 * 60 * 60 * 1000 // 10 days, change later
-const val GEOFENCE_DWELL_DELAY = 10 * 1000 // 10 secs, change later
-
 class Geofencing : AppCompatActivity(), OnMapReadyCallback {
+
+    private val LOCATION_REQUEST_CODE = 123
+    private val GEOFENCE_REQUEST_CODE = 456 // only for android version >= 10
+    private val CAMERA_ZOOM_LEVEL = 12f
+    private val GEOFENCE_RADIUS = 500 // change later
+    private val GEOFENCE_ID = "REMINDER_GEOFENCE_ID"
+    private val GEOFENCE_EXPIRATION = 10 * 24 * 60 * 60 * 1000 // 10 days, change later
+    private val GEOFENCE_DWELL_DELAY = 10 * 1000 // 10 secs, change later
+    private val TAG: String = Geofencing::class.java.simpleName
+
     private lateinit var map: GoogleMap
     private lateinit var binding: ActivityGeofencingBinding
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -72,7 +74,7 @@ class Geofencing : AppCompatActivity(), OnMapReadyCallback {
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
      */
-    @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+    //@RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
         map.uiSettings.isZoomControlsEnabled = true
@@ -89,9 +91,9 @@ class Geofencing : AppCompatActivity(), OnMapReadyCallback {
                             this,
                             Manifest.permission.ACCESS_COARSE_LOCATION
                     ) != PackageManager.PERMISSION_GRANTED) {
-                askForLocationPerms()
+//                askForLocationPerms()
             }
-            map.isMyLocationEnabled = true
+            this.map.isMyLocationEnabled = true
 
             // getting last known location data
             fusedLocationClient.lastLocation.addOnSuccessListener {
@@ -116,7 +118,8 @@ class Geofencing : AppCompatActivity(), OnMapReadyCallback {
                 }
             }
         }
-        createFence(map)
+        setLongClick(map)
+        setPoiClick(map)
     }
 
     private fun areLocationPermsGranted(): Boolean { // checks if location permissions have been granted
@@ -156,36 +159,55 @@ class Geofencing : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-    private fun createFence(map: GoogleMap) { // creates the physical, viewable fence; not the actual geofence
-        map.setOnMapLongClickListener {
+    private fun setPoiClick(map: GoogleMap) {
+        map.setOnPoiClickListener { poi ->
             map.addMarker(
-                MarkerOptions().position(it)
+                MarkerOptions()
+                    .position(poi.latLng)
+                    .title(poi.name)
+            )?.showInfoWindow()
+
+            //scheduleJob()
+        }
+    }
+
+    private fun setLongClick(map: GoogleMap) {
+        map.setOnMapLongClickListener { latlng ->
+
+            map.addMarker(
+                MarkerOptions().position(latlng)
+                    .title("Current location")
             )?.showInfoWindow()
             map.addCircle(
-                CircleOptions().center(it)
-                    .strokeColor(Color.argb(1, 0, 0, 0))
-                    .fillColor(Color.argb(1, 183, 183, 183))
+                CircleOptions()
+                    .center(latlng)
+                    .strokeColor(Color.argb(50, 70, 70, 70))
+                    .fillColor(Color.argb(70, 150, 150, 150))
                     .radius(GEOFENCE_RADIUS.toDouble())
             )
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                LatLng(it.latitude, it.longitude),
-                CAMERA_ZOOM_LEVEL)
-            )
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, CAMERA_ZOOM_LEVEL))
 
-            // pushing data (lat & lng of the centre of the fence) to firebase
             val database = Firebase.database
-            val reference = database.getReference("fences")
+            val reference = database.getReference("reminders")
             val key = reference.push().key
             if (key != null) {
-                val fence = Fence(key, it.latitude, it.longitude)
-                reference.child(key).setValue(fence)
+                val reminder = Fence(key, latlng.latitude, latlng.longitude)
+                reference.child(key).setValue(reminder)
             }
-            createGeofence(it, key!!, geofencingClient)
-            TODO("Have to communicate with Abhiram and figure out how we're going to" +
-                    "dynamically get coords from the database and create fences accordingly." +
-                    "For now tho, implemented creation of fences when long pressed" +
-                    "on a particular location.")
+            if (ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+            }
+            createGeofence(latlng, key!!, geofencingClient)
         }
     }
 
