@@ -175,7 +175,7 @@ class Geofencing : AppCompatActivity(), OnMapReadyCallback {
         map.setOnMapLongClickListener { latlng ->
             map.addMarker(
                 MarkerOptions().position(latlng)
-                    .title("Current location")
+                    .title("Geofence centre")
             )?.showInfoWindow()
             map.addCircle(
                 CircleOptions()
