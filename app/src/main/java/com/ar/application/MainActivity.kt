@@ -13,6 +13,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -21,6 +23,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var inApp : Button
     private lateinit var geoFence : Button
     private lateinit var traceRoute : Button
+    private lateinit var showData : Button
 
     private lateinit var home_name : TextView
     private lateinit var home_id : TextView
@@ -42,6 +45,7 @@ class MainActivity : AppCompatActivity() {
         home_id = findViewById(R.id.home_unique_id)
         home_email = findViewById(R.id.home_email)
         home_contact = findViewById(R.id.home_contact)
+        showData = findViewById(R.id.showData)
 
         preferences = getSharedPreferences("SHARED_PREF", Context.MODE_PRIVATE)
         val UID = preferences.getString("User UID", " ")
@@ -73,6 +77,16 @@ class MainActivity : AppCompatActivity() {
         traceRoute.setOnClickListener{
             var traceRouteIntent = Intent(this, TracingRoute::class.java)
             startActivity(traceRouteIntent)
+        }
+
+        showData.setOnClickListener{
+            val fragmentManager : FragmentManager = supportFragmentManager
+            val fragmentTransaction : FragmentTransaction = fragmentManager.beginTransaction()
+
+            val firstFragment = PrimaryContacts()
+            fragmentTransaction.add(R.id.frame, firstFragment)
+
+            fragmentTransaction.commit()
         }
 
     }
