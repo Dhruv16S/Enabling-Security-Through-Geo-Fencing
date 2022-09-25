@@ -1,9 +1,12 @@
 package com.ar.application
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -12,7 +15,10 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import com.google.firebase.firestore.ktx.firestore
@@ -33,10 +39,13 @@ class MainActivity : AppCompatActivity() {
     lateinit var preferences: SharedPreferences
     val db = Firebase.firestore
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        checkLocationPermission()
 
         inApp = findViewById(R.id.in_app)
         geoFence = findViewById(R.id.geofence)
@@ -90,4 +99,82 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
+
+    private fun checkLocationPermission() {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(
+                    this,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                )
+            ) {
+                AlertDialog.Builder(this)
+                    .setTitle("Location Permission Needed")
+                    .setMessage("This app needs the Location permission, please accept to use location functionality")
+                    .setPositiveButton(
+                        "OK"
+                    ) { _, _ ->
+                        //Prompt the user once explanation has been shown
+                        requestLocationPermission()
+                    }
+                    .create()
+                    .show()
+            } else {
+                // No explanation needed, we can request the permission.
+                requestLocationPermission()
+            }
+        } else {
+            checkBackgroundLocation()
+        }
+    }
+
+    private fun checkBackgroundLocation() {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_BACKGROUND_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestBackgroundLocationPermission()
+        }
+    }
+
+    private fun requestLocationPermission() {
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+            ),
+            MY_PERMISSIONS_REQUEST_LOCATION
+        )
+    }
+
+    private fun requestBackgroundLocationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(
+                    Manifest.permission.ACCESS_BACKGROUND_LOCATION
+                ),
+                MY_PERMISSIONS_REQUEST_BACKGROUND_LOCATION
+            )
+        } else {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                MY_PERMISSIONS_REQUEST_LOCATION
+            )
+        }
+    }
+
+
+
+    companion object {
+        private const val MY_PERMISSIONS_REQUEST_LOCATION = 99
+        private const val MY_PERMISSIONS_REQUEST_BACKGROUND_LOCATION = 66
+    }
+
 }
