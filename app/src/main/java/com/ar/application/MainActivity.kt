@@ -1,7 +1,6 @@
 package com.ar.application
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -9,12 +8,9 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.view.View
 import android.widget.Button
-import android.widget.ImageView
+import android.widget.FrameLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
@@ -30,6 +26,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var geoFence : Button
     private lateinit var traceRoute : Button
     private lateinit var showData : Button
+    private lateinit var frame : FrameLayout
 
     private lateinit var home_name : TextView
     private lateinit var home_id : TextView
@@ -55,6 +52,7 @@ class MainActivity : AppCompatActivity() {
         home_email = findViewById(R.id.home_email)
         home_contact = findViewById(R.id.home_contact)
         showData = findViewById(R.id.showData)
+        frame = findViewById(R.id.frame)
 
         preferences = getSharedPreferences("SHARED_PREF", Context.MODE_PRIVATE)
         val UID = preferences.getString("User UID", " ")
@@ -73,14 +71,19 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
+        val fragmentManager : FragmentManager = supportFragmentManager
+        var fragmentTransaction : FragmentTransaction = fragmentManager.beginTransaction()
+
         inApp.setOnClickListener{
             var inAppIntent = Intent(this, InAppMessaging::class.java)
             startActivity(inAppIntent)
         }
 
         geoFence.setOnClickListener{
-            var geoFenceIntent = Intent(this, Geofencing::class.java)
-            startActivity(geoFenceIntent)
+            frame.removeAllViews()
+            fragmentTransaction = fragmentManager.beginTransaction()
+            fragmentTransaction.add(R.id.frame, GeoFenceFragment())
+            fragmentTransaction.commit()
         }
 
         traceRoute.setOnClickListener{
@@ -89,12 +92,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         showData.setOnClickListener{
-            val fragmentManager : FragmentManager = supportFragmentManager
-            val fragmentTransaction : FragmentTransaction = fragmentManager.beginTransaction()
-
-            val firstFragment = PrimaryContacts()
-            fragmentTransaction.add(R.id.frame, firstFragment)
-
+            frame.removeAllViews()
+            fragmentTransaction = fragmentManager.beginTransaction()
+            fragmentTransaction.add(R.id.frame, PrimaryContacts())
             fragmentTransaction.commit()
         }
 

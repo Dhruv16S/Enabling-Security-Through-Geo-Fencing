@@ -13,37 +13,37 @@
         android:id="@+id/in_app"
         android:layout_width="118dp"
         android:layout_height="60dp"
-        android:layout_marginTop="656dp"
+        android:layout_marginBottom="1dp"
         android:gravity="center"
         android:text="@string/button_in_app"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.58"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/trace_route"
         android:layout_width="68dp"
         android:layout_height="72dp"
-        android:layout_marginTop="656dp"
+        android:layout_marginBottom="1dp"
         android:gravity="center"
         android:text="@string/button_trace_route"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.276"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/geofence"
         android:layout_width="80dp"
         android:layout_height="72dp"
-        android:layout_marginTop="656dp"
+        android:layout_marginBottom="1dp"
         android:gravity="center"
         android:text="@string/button_geofence"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.03"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintHorizontal_bias="0.028"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
         android:id="@+id/imageView"
@@ -109,16 +109,15 @@
         android:id="@+id/showData"
         android:layout_width="88dp"
         android:layout_height="49dp"
-        android:layout_marginTop="664dp"
         android:layout_marginEnd="32dp"
         android:text="data"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <FrameLayout
         android:id="@+id/frame"
-        android:layout_width="409dp"
-        android:layout_height="557dp"
+        android:layout_width="390dp"
+        android:layout_height="625dp"
         android:layout_marginTop="104dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

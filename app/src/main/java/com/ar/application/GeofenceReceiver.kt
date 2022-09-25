@@ -3,7 +3,7 @@ package com.ar.application
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.ar.application.Geofencing.Companion.showNotification
+import com.ar.application.GeoFenceFragment.Companion.showNotification
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingEvent
 import com.google.firebase.database.DataSnapshot
