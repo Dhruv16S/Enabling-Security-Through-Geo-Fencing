@@ -10,26 +10,29 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
-import androidx.fragment.app.Fragment
-
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.annotation.NonNull
 import androidx.annotation.RequiresPermission
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import com.google.android.gms.location.*
-
-import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import kotlin.random.Random
@@ -93,6 +96,8 @@ class GeoFenceFragment : Fragment() {
                 }
             }
         }
+        //readRealTime()
+        dynamicGeoFence(map)
         setLongClick(map)
         setPoiClick(map)
 
@@ -165,6 +170,94 @@ class GeoFenceFragment : Fragment() {
     }
 
     @SuppressLint("MissingPermission")
+    private fun readRealTime() {
+        val path = FirebaseDatabase.getInstance().reference.child("fences")
+        //for (i in 1..Constants.PIN_COUNTER){
+            path.child("Point 1")
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(@NonNull dataSnapshot: DataSnapshot) {
+                        var chosenLatLng = LatLng(dataSnapshot.child("lat").value.toString().toDouble(),dataSnapshot.child("lng").value.toString().toDouble() )
+
+                        map.addMarker(
+                            MarkerOptions().position(chosenLatLng)
+                                .title("GeoFence 1")
+                        )?.showInfoWindow()
+                        map.addCircle(
+                            CircleOptions()
+                                .center(chosenLatLng)
+                                .strokeColor(Color.argb(50, 70, 70, 70))
+                                .fillColor(Color.argb(70, 150, 150, 150))
+                                .radius(GEOFENCE_RADIUS.toDouble())
+                        )
+                        createGeofence(chosenLatLng, "Dynamic", geofencingClient)
+
+                    }
+
+                    override fun onCancelled(@NonNull databaseError: DatabaseError) {}
+                })
+      //}
+
+    }
+
+
+    @SuppressLint("MissingPermission")
+    private fun dynamicGeoFence(map: GoogleMap) {
+
+        val database = Firebase.database
+        val reference = database.getReference("fences")
+        val key = reference.push().key
+        reference.child("PIN_COUNTER").get().addOnSuccessListener {
+            Constants.PIN_COUNTER = it.value.toString().toLong()
+        }
+
+        for (i in 1..Constants.PIN_COUNTER){
+            reference.child("Point $i").get().addOnSuccessListener {
+                if(it.exists()){
+
+                    var pinLatitude : Double = it.child("lat").value.toString().toDouble()
+                    var pinLongitude : Double = it.child("lng").value.toString().toDouble()
+                    var chosenLatLng = LatLng(pinLatitude, pinLongitude)
+                    map.addMarker(
+                        MarkerOptions().position(chosenLatLng)
+                            .title("GeoFence $i")
+                    )?.showInfoWindow()
+                    map.addCircle(
+                        CircleOptions()
+                            .center(chosenLatLng)
+                            .strokeColor(Color.argb(50, 70, 70, 70))
+                            .fillColor(Color.argb(70, 150, 150, 150))
+                            .radius(GEOFENCE_RADIUS.toDouble())
+                    )
+                    createGeofence(chosenLatLng, "Dynamic", geofencingClient)
+
+                }else{
+                    Toast.makeText(requireContext(), "Creation Complete", Toast.LENGTH_SHORT).show()
+                }
+            }.addOnFailureListener {
+                Toast.makeText(requireContext(), "No Routes Traced", Toast.LENGTH_SHORT).show()
+            }
+        }
+            //map.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, CAMERA_ZOOM_LEVEL))
+
+
+
+            if (ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+            }
+
+    }
+
+    @SuppressLint("MissingPermission")
     private fun setLongClick(map: GoogleMap) {
         map.setOnMapLongClickListener { latlng ->
             map.addMarker(
@@ -178,7 +271,7 @@ class GeoFenceFragment : Fragment() {
                     .fillColor(Color.argb(70, 150, 150, 150))
                     .radius(GEOFENCE_RADIUS.toDouble())
             )
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, CAMERA_ZOOM_LEVEL))
+            //map.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, CAMERA_ZOOM_LEVEL))
 
             val database = Firebase.database
             val reference = database.getReference("fences")
@@ -187,6 +280,7 @@ class GeoFenceFragment : Fragment() {
                 val reminder = Fence(key, latlng.latitude, latlng.longitude)
                 reference.child(key).setValue(reminder)
             }
+
             if (ActivityCompat.checkSelfPermission(
                     requireContext(),
                     Manifest.permission.ACCESS_FINE_LOCATION

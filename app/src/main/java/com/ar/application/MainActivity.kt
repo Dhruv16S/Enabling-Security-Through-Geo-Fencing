@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.annotation.RequiresApi
@@ -26,6 +27,8 @@ import com.ar.application.Constants.FAST_UPDATE_INTERVAL
 import com.ar.application.Constants.NORMAL_UPDATE_INTERVAL
 import com.ar.application.Constants.PERMISSION_FINE_LOCATION
 import com.google.android.gms.location.*
+import com.google.android.gms.maps.model.LatLng
+import com.google.firebase.database.ktx.database
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.lang.Exception
@@ -130,10 +133,12 @@ class MainActivity : AppCompatActivity() {
             fragmentTransaction.commit()
         }
 
-//        traceRoute.setOnClickListener{
-//            var traceRouteIntent = Intent(this, TracingRoute::class.java)
-//            startActivity(traceRouteIntent)
-//        }
+        traceRoute.setOnClickListener{
+            frame.removeAllViews()
+            fragmentTransaction = fragmentManager.beginTransaction()
+            fragmentTransaction.add(R.id.frame, TraceLocationFragment())
+            fragmentTransaction.commit()
+        }
 
         showData.setOnClickListener{
             frame.removeAllViews()
@@ -312,9 +317,17 @@ class MainActivity : AppCompatActivity() {
 
     private val locationTracer: Runnable = object : Runnable {
         override fun run() {
+            val database = Firebase.database
+            val reference = database.getReference("fences")
+            Constants.PIN_COUNTER += 1
+            val key = "Point " + Constants.PIN_COUNTER
+            reference.child("PIN_COUNTER").setValue(Constants.PIN_COUNTER)
 
-            Toast.makeText(this@MainActivity, "${currentLocation.latitude} and ${currentLocation.longitude}", Toast.LENGTH_SHORT).show()
-            mHandler.postDelayed(this, 3000)
+            if (key != null) {
+                val reminder = Fence(key, currentLocation.latitude, currentLocation.longitude)
+                reference.child(key).setValue(reminder)
+            }
+            mHandler.postDelayed(this, 1000*60)
         }
     }
 

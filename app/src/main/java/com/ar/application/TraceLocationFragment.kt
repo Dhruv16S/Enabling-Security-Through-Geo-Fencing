@@ -3,6 +3,7 @@ package com.ar.application
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.os.Build
 import androidx.fragment.app.Fragment
 
@@ -10,6 +11,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -20,8 +22,11 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 
 class TraceLocationFragment : Fragment() {
 
@@ -67,6 +72,45 @@ class TraceLocationFragment : Fragment() {
                 }
             }
         }
+        //tracePath(map)
+    }
+
+
+    @SuppressLint("MissingPermission")
+    private fun tracePath(map: GoogleMap) {
+
+        val database = Firebase.database
+        val reference = database.getReference("fences")
+        val key = reference.push().key
+        reference.child("PIN_COUNTER").get().addOnSuccessListener {
+            Constants.PIN_COUNTER = it.value.toString().toLong()
+        }
+
+        for (i in 1..Constants.PIN_COUNTER){
+            reference.child("Point $i").get().addOnSuccessListener {
+                if(it.exists()){
+
+                    var pinLatitude : Double = it.child("lat").value.toString().toDouble()
+                    var pinLongitude : Double = it.child("lng").value.toString().toDouble()
+                    var chosenLatLng = LatLng(pinLatitude, pinLongitude)
+                    map.addMarker(
+                        MarkerOptions().position(chosenLatLng)
+                            .title("GeoFence $i")
+                    )?.showInfoWindow()
+                }else{
+                    Toast.makeText(requireContext(), "Creation Complete", Toast.LENGTH_SHORT).show()
+                }
+            }.addOnFailureListener {
+                Toast.makeText(requireContext(), "No Routes Traced", Toast.LENGTH_SHORT).show()
+            }
+        }
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+        }
+
     }
 
     override fun onCreateView(
