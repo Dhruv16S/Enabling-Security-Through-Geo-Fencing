@@ -251,53 +251,6 @@ class GeoFenceFragment : Fragment() {
         }
     }
 
-//    @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-//    override fun onRequestPermissionsResult(
-//        requestCode: Int,
-//        permissions: Array<out String>,
-//        grantResults: IntArray
-//    ) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-//        if (requestCode == GEOFENCE_REQUEST_CODE) {
-//            if (permissions.isNotEmpty() && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-//                Toast.makeText(
-//                    requireContext(),
-//                    "Please grant background location permission!",
-//                    Toast.LENGTH_SHORT
-//                )
-//                    .show()
-//                askForBackgroundLocationPerm()
-//            }
-//        }
-//        else if (requestCode == LOCATION_REQUEST_CODE) {
-//            if (permissions.isNotEmpty() &&
-//                (grantResults[0] == PackageManager.PERMISSION_GRANTED
-//                        || grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
-//                if (ActivityCompat.checkSelfPermission(
-//                        requireContext(),
-//                        Manifest.permission.ACCESS_FINE_LOCATION
-//                    ) != PackageManager.PERMISSION_GRANTED &&
-//                    ActivityCompat.checkSelfPermission(
-//                        requireContext(),
-//                        Manifest.permission.ACCESS_COARSE_LOCATION
-//                    ) != PackageManager.PERMISSION_GRANTED) {
-//                    askForLocationPerms()
-//                }
-//                map.isMyLocationEnabled = true
-//                //OnMapReadyCallback(map)
-//            }
-//            else {
-//                Toast.makeText(
-//                    requireContext(),
-//                    "Please grant location permissions!",
-//                    Toast.LENGTH_SHORT
-//                )
-//                    .show()
-//                askForLocationPerms()
-//            }
-//        }
-//    }
-
     companion object {
         fun showNotification(context: Context, message: String) {
 
