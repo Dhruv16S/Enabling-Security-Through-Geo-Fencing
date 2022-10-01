@@ -2,51 +2,60 @@ package com.ar.application
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
-import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import com.ar.application.Constants.FAST_UPDATE_INTERVAL
 import com.ar.application.Constants.NORMAL_UPDATE_INTERVAL
 import com.ar.application.Constants.PERMISSION_FINE_LOCATION
 import com.google.android.gms.location.*
-import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.database.ktx.database
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import java.lang.Exception
+
 
 class MainActivity : AppCompatActivity() {
 
     private val mHandler = Handler()
 
     private lateinit var inApp : Button
-    private lateinit var geoFence : Button
+    private lateinit var geoFence : ConstraintLayout
     private lateinit var traceRoute : Button
-    private lateinit var showData : Button
+    private lateinit var showData : ConstraintLayout
     private lateinit var frame : FrameLayout
 
     private lateinit var home_name : TextView
     private lateinit var home_id : TextView
     private lateinit var home_email : TextView
     private lateinit var home_contact : TextView
+    private lateinit var initiateTrackButton : Button
+    private lateinit var initiateTrackImage : ImageView
+    private lateinit var trackingConstraint : ConstraintLayout
+    private lateinit var mainConstraintLayout: ConstraintLayout
 
     lateinit var locSwitch: Switch
     lateinit var gpsSwitch: Switch
@@ -61,8 +70,11 @@ class MainActivity : AppCompatActivity() {
     lateinit var currentLocation : Location
 
     //buttons
-    lateinit var newWayPointBtn : Button
+    lateinit var newWayPointBtn : CardView
+    lateinit var stopWayPointBtn : CardView
 
+    private val CHANNEL_ID = "channel_tracking"
+    private val notificationID = 101
 
     lateinit var preferences: SharedPreferences
     val db = Firebase.firestore
@@ -74,10 +86,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         checkLocationPermission()
+        createNotificationChannel()
 
         inApp = findViewById(R.id.in_app)
-        geoFence = findViewById(R.id.geofence)
-        traceRoute = findViewById(R.id.trace_route)
+        geoFence = findViewById(R.id.geoFence)
+//        traceRoute = findViewById(R.id.trace_route)
         home_name = findViewById(R.id.home_name)
         home_id = findViewById(R.id.home_unique_id)
         home_email = findViewById(R.id.home_email)
@@ -86,7 +99,12 @@ class MainActivity : AppCompatActivity() {
         frame = findViewById(R.id.frame)
         locSwitch = findViewById(R.id.location_update_switch)
         gpsSwitch = findViewById(R.id.gps_switch)
-        newWayPointBtn = findViewById(R.id.wayPointButton)
+        newWayPointBtn = findViewById(R.id.cardStartTracking)
+        stopWayPointBtn = findViewById(R.id.cardStopTracking)
+        initiateTrackButton = findViewById(R.id.initiateTrackButton)
+        initiateTrackImage = findViewById(R.id.initiateTrackImg)
+        trackingConstraint = findViewById(R.id.trackingConstraint)
+        mainConstraintLayout = findViewById(R.id.mainConstraintLayout)
 
         geocoder = Geocoder(this)
         locreq = LocationRequest.create()
@@ -127,20 +145,17 @@ class MainActivity : AppCompatActivity() {
         }
 
         geoFence.setOnClickListener{
+            Constants.onHomePage = false
+            trackingConstraint.visibility = View.GONE
             frame.removeAllViews()
             fragmentTransaction = fragmentManager.beginTransaction()
             fragmentTransaction.add(R.id.frame, GeoFenceFragment())
             fragmentTransaction.commit()
         }
 
-        traceRoute.setOnClickListener{
-            frame.removeAllViews()
-            fragmentTransaction = fragmentManager.beginTransaction()
-            fragmentTransaction.add(R.id.frame, TraceLocationFragment())
-            fragmentTransaction.commit()
-        }
-
         showData.setOnClickListener{
+            Constants.onHomePage = false
+            trackingConstraint.visibility = View.GONE
             frame.removeAllViews()
             fragmentTransaction = fragmentManager.beginTransaction()
             fragmentTransaction.add(R.id.frame, PrimaryContacts())
@@ -156,8 +171,51 @@ class MainActivity : AppCompatActivity() {
         }
 
         newWayPointBtn.setOnClickListener{
+            sendNotification("Tracking Enabled", "Return to the app to turn off")
             startRepeating(window.decorView.findViewById(android.R.id.content))
             Constants.LOCATION_LIST.add(currentLocation)
+        }
+
+        stopWayPointBtn.setOnClickListener {
+            sendNotification("Tracking Disabled", "No longer tracking")
+            stopRepeating(window.decorView.findViewById(android.R.id.content))
+        }
+
+
+        mainConstraintLayout.setOnClickListener {
+            trackingConstraint.visibility = View.GONE
+        }
+
+        frame.setOnClickListener {
+            trackingConstraint.visibility = View.GONE
+        }
+
+        // Display buttons
+        // NOTE: Did not combine image and button
+        initiateTrackImage.setOnClickListener {
+            if(trackingConstraint.visibility == View.VISIBLE)
+                trackingConstraint.visibility = View.GONE
+            else
+                trackingConstraint.visibility = View.VISIBLE
+            if(!Constants.onHomePage){
+                frame.removeAllViews()
+                fragmentTransaction = fragmentManager.beginTransaction()
+                fragmentTransaction.add(R.id.frame, TraceLocationFragment())
+                fragmentTransaction.commit()
+            }
+        }
+
+        initiateTrackButton.setOnClickListener {
+            if(trackingConstraint.visibility == View.VISIBLE)
+                trackingConstraint.visibility = View.GONE
+            else
+                trackingConstraint.visibility = View.VISIBLE
+            if(!Constants.onHomePage){
+                frame.removeAllViews()
+                fragmentTransaction = fragmentManager.beginTransaction()
+                fragmentTransaction.add(R.id.frame, TraceLocationFragment())
+                fragmentTransaction.commit()
+            }
         }
 
         locSwitch.setOnClickListener {
@@ -178,6 +236,32 @@ class MainActivity : AppCompatActivity() {
         }
         updateGPS()
     }
+
+
+    private fun createNotificationChannel(){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            val name = "Notification Title"
+            val descriptionText = "Notification Description"
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel(CHANNEL_ID, name, importance)
+                .apply { descriptionText }
+            val notificationManager : NotificationManager = getSystemService(Context. NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
+
+    private fun sendNotification(title : String, desc : String){
+        val builder = NotificationCompat.Builder(this, CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_baseline_my_location_24)
+            .setContentTitle(title)
+            .setContentText(desc)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+
+        with(NotificationManagerCompat.from(this)){
+            notify(notificationID, builder.build())
+        }
+    }
+
 
     @SuppressLint("MissingPermission")
     private fun updateGPS() {
@@ -327,7 +411,7 @@ class MainActivity : AppCompatActivity() {
                 val reminder = Fence(key, currentLocation.latitude, currentLocation.longitude)
                 reference.child(key).setValue(reminder)
             }
-            mHandler.postDelayed(this, 1000*60)
+            mHandler.postDelayed(this, 1000*10)
         }
     }
 

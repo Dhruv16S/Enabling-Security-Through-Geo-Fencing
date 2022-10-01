@@ -49,7 +49,7 @@ class InAppMessaging : AppCompatActivity() {
                             }
                         }
                         for (i in 0..fetchedData.size - 1)
-                            msgObj.sendTextMessage("8978383634", null, "Sent Via Android Studio", null, null)
+                            msgObj.sendTextMessage(fetchedData[i], null, "Sent Via Android Studio", null, null)
                     }
             }catch(e : Exception){
                 Log.d("Error is : ", e.message.toString())

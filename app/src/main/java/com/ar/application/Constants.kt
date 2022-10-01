@@ -9,4 +9,5 @@ object Constants {
     var MANY_BOOL : Boolean = true
     var PIN_COUNTER : Long = 0
     var LOCATION_LIST = ArrayList<Location>()
+    var onHomePage : Boolean = true
 }
