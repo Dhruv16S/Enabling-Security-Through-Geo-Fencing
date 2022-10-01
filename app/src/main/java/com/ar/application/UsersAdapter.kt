@@ -1,6 +1,7 @@
 package com.ar.application
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,11 +10,18 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.internal.ContextUtils.getActivity
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
 class UsersAdapter : RecyclerView.Adapter<UsersAdapter.UserViewHolder>{
     var UIDs = ArrayList<String>()
     var Emails = ArrayList<String>()
     var Contacts = ArrayList<String>()
+    val db = Firebase.firestore
+    lateinit var preferences : SharedPreferences
+    var docID = ""
 
     lateinit var context : Context
 
@@ -38,45 +46,35 @@ class UsersAdapter : RecyclerView.Adapter<UsersAdapter.UserViewHolder>{
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
-        //define the card design we made aka which design is displayed
         val view : View = LayoutInflater.from(parent.context).inflate(R.layout.card_design, parent, false)
         return UserViewHolder(view)
 
     }
 
     override fun onBindViewHolder(holder: UserViewHolder, position: Int){
-        //what should be done when design is connected to recycler view
         holder.card_UID.text = UIDs.get(position)
         holder.card_email.text = Emails.get(position)
         holder.card_contact.text = Contacts.get(position)
 
+        preferences = context.getSharedPreferences("SHARED_PREF", Context.MODE_PRIVATE)
+        val UID = preferences.getString("User UID", " ").toString()
 
-        //card view is defined here, so toast is also specified here
+        db.collection("users")
+            .get()
+            .addOnSuccessListener { result ->
+                for (document in result) {
+                    if(document.data["User UID"] == UID)
+                        docID = document.id
+                }
+            }
+
         holder.cardView.setOnClickListener{
-            Toast.makeText(context, "You selected ${UIDs.get(position)}", Toast.LENGTH_SHORT).show()
+            db.collection("users").document(docID).update("contacts", FieldValue.arrayUnion(Contacts.get(position).toString()))
+            Toast.makeText(context, "User Added As Primary Contact", Toast.LENGTH_SHORT).show()
         }
-
-//        holder.button.setOnClickListener {
-//            Toast.makeText(context, "You clicked the button of ${UIDs.get(position)}", Toast.LENGTH_SHORT).show()
-//            removeItem(position, holder)
-//            //countryNameList.remove(countryNameList.get(position))
-//            //holder.countryName.isVisible = false
-//            //holder.textViewDetail.isVisible = false
-//            //holder.button.isVisible = false
-//            // works when deleted from bottom to top
-//
-//        }
     }
 
-//    private fun removeItem(position: Int, holder: UserViewHolder) {
-//        val newPosition: Int = holder.getAdapterPosition()
-//        UIDs.removeAt(newPosition)
-//        notifyItemRemoved(newPosition)
-//        notifyItemRangeChanged(newPosition, UIDs.size)
-//    }
-
     override fun getItemCount(): Int {
-        //amount of data to be displayed
         return UIDs.size
     }
 

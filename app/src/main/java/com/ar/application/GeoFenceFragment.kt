@@ -45,7 +45,7 @@ class GeoFenceFragment : Fragment() {
     private val GEOFENCE_RADIUS = 10f // change later
     private val GEOFENCE_ID = "REMINDER_GEOFENCE_ID"
     private val GEOFENCE_EXPIRATION = 10 * 24 * 60 * 60 * 1000 // 10 days, change later
-    private val GEOFENCE_DWELL_DELAY = 10 * 1000 // 10 secs, change later
+    private val GEOFENCE_DWELL_DELAY = 1 * 1000 // 10 secs, change later
     private val TAG: String = GeoFenceFragment::class.java.simpleName
     private lateinit var map: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -313,9 +313,13 @@ class GeoFenceFragment : Fragment() {
             // min duration of user in geofence for action to be triggered
             .build()
 
+
         val geofenceRequest = GeofencingRequest.Builder()
-            .setInitialTrigger(Geofence.GEOFENCE_TRANSITION_ENTER)
-            .addGeofence(geofence)
+            .apply {
+                setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER
+                        or GeofencingRequest.INITIAL_TRIGGER_EXIT)
+                addGeofence(geofence)
+            }
             .build()
 
         val intent = Intent(requireActivity(), GeofenceReceiver::class.java)
