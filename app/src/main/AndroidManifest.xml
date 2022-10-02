@@ -59,7 +59,8 @@
             android:label="@string/title_activity_tracing_route" />
         <activity
             android:name=".InAppMessaging"
-            android:exported="false" />
+            android:exported="false"
+            />
         <activity
             android:name=".MainActivity"
             android:exported="false"></activity>

@@ -21,7 +21,6 @@
     <string name="home_hashName">Unique ID</string>
     <string name="home_email">Email ID</string>
     <string name="home_contact">Contact</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="locUpdate">Location Update</string>
     <string name="gpsSensors">GPS Sensors       </string>
@@ -29,4 +28,5 @@
     <string name="descStartTrack">Enable tracking to monitor your routes and create Geo-Fences. Requires location.</string>
     <string name="stopTrack">Stop Tracking</string>
     <string name="descStopTrack">Terminate Tracking. Monitoring on the basis of the Geo-Fences created.</string>
+    <string name="sendSOS">Send\nSOS</string>
 </resources>

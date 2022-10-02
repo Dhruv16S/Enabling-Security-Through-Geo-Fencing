@@ -36,8 +36,8 @@ class InAppMessaging : AppCompatActivity() {
 
 
         sosButton = findViewById(R.id.sos_button)
-        sosButton.setOnClickListener {
-            try {
+
+        try {
                 val msgObj = SmsManager.getDefault()
 
                 db.collection("users")
@@ -55,7 +55,7 @@ class InAppMessaging : AppCompatActivity() {
                 Log.d("Error is : ", e.message.toString())
                 Toast.makeText(this, "Doesn't work ${e.message.toString()}", Toast.LENGTH_SHORT).show()
             }
-        }
+
     }
     override fun onRequestPermissionsResult(
         requestCode: Int,
