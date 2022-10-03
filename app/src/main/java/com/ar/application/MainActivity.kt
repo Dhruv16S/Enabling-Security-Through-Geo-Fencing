@@ -46,7 +46,6 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var inApp : ConstraintLayout
     private lateinit var geoFence : ConstraintLayout
-    private lateinit var traceRoute : Button
     private lateinit var showData : ConstraintLayout
     private lateinit var frame : FrameLayout
     private lateinit var confirmSOS : ConstraintLayout
@@ -98,7 +97,6 @@ class MainActivity : AppCompatActivity() {
 
         inApp = findViewById(R.id.in_app)
         geoFence = findViewById(R.id.geoFence)
-//        traceRoute = findViewById(R.id.trace_route)
         home_name = findViewById(R.id.home_name)
         home_id = findViewById(R.id.home_unique_id)
         home_email = findViewById(R.id.home_email)
@@ -120,7 +118,6 @@ class MainActivity : AppCompatActivity() {
         geocoder = Geocoder(this)
         locreq = LocationRequest.create()
 
-        //the update intervals are in constants.kt
 
         locreq.interval = 1000 * NORMAL_UPDATE_INTERVAL
         locreq.fastestInterval = 1000 * FAST_UPDATE_INTERVAL
@@ -180,14 +177,6 @@ class MainActivity : AppCompatActivity() {
             fragmentTransaction.commit()
         }
 
-//        gpsSwitch.setOnClickListener() {
-//            if (gpsSwitch.isChecked) {
-//                locreq.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-//            } else {
-//                locreq.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY)
-//            }
-//        }
-
         newWayPointBtn.setOnClickListener{
             startLocationUpdates()
             locreq.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
@@ -243,14 +232,6 @@ class MainActivity : AppCompatActivity() {
             return@setOnLongClickListener true
         }
 
-//        locSwitch.setOnClickListener {
-//            if (locSwitch.isChecked) {
-//                startLocationUpdates()
-//            } else {
-//                stopLocationUpdates()
-//            }
-//        }
-
         locationCallback = object : LocationCallback(){
             override fun onLocationResult(p0: LocationResult) {
                 p0 ?: return
@@ -284,10 +265,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // initiating activity, work around
     private fun proceedToSOS(){
-//        var inAppIntent = Intent(this, InAppMessaging::class.java)
-//        startActivity(inAppIntent)
         mainSOSFunction()
     }
 
@@ -374,7 +352,6 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("MissingPermission")
     private fun updateGPS() {
-        //get permissions before updating stuff
         flpc = LocationServices.getFusedLocationProviderClient(this)
         if (ActivityCompat.checkSelfPermission(
                 this,
@@ -399,7 +376,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateUIValues(location: Location) {
-        //updating all text view objects with new location
         currentLocation = location
     }
 
@@ -409,7 +385,6 @@ class MainActivity : AppCompatActivity() {
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(
                     this,
                     Manifest.permission.ACCESS_FINE_LOCATION
@@ -421,13 +396,11 @@ class MainActivity : AppCompatActivity() {
                     .setPositiveButton(
                         "OK"
                     ) { _, _ ->
-                        //Prompt the user once explanation has been shown
                         requestLocationPermission()
                     }
                     .create()
                     .show()
             } else {
-                // No explanation needed, we can request the permission.
                 requestLocationPermission()
             }
         } else {
@@ -500,7 +473,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun startRepeating(v: View?) {
-        //mHandler.postDelayed(mToastRunnable, 5000);
         locationTracer.run()
     }
 
@@ -523,6 +495,4 @@ class MainActivity : AppCompatActivity() {
             mHandler.postDelayed(this, 1000*15)
         }
     }
-
-
 }
