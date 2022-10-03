@@ -37,6 +37,9 @@ import com.google.android.gms.location.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import android.net.wifi.WifiManager
+import android.telephony.CellSignalStrength
+import android.telephony.CellSignalStrengthLte
 import org.w3c.dom.Text
 
 
